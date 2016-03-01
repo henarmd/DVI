@@ -3,6 +3,11 @@
  * el número de cartas encontradas (para saber cuándo hemos terminado el juego) y un texto con el mensaje
  * que indica en qué estado se encuentra el juego
  */
+ const messageWin = "Ueueue";
+ const messagePlay = "Play";
+ const messageTry = "Uyy";
+ const messageFound = "Vamoos!";
+ const nameBack = "back";
 var MemoryGame = MemoryGame || {};
 /**
  * Constructora de MemoryGame
@@ -17,10 +22,11 @@ MemoryGame.prototype = {
 		memoryGame = new Array();
 		memoryGame.Cartas = new Array();
 		memoryGame.Solved = 0;
-		memoryGame.Message = "Playing";
+		memoryGame.Message = messagePlay;
+		memoryGame.Tried = 0;
 		//Relleno Array
 		for (sprite in gs.maps){
-			if(sprite != "back"){
+			if(sprite != nameBack){
 	    	memoryGame.Cartas.push(new MemoryGame.Card(sprite));
 			memoryGame.Cartas.push(new MemoryGame.Card(sprite));
 			}
@@ -38,15 +44,19 @@ MemoryGame.prototype = {
 		};
 		//Compruebo si ha ganado
 		if(memoryGame.Solved >= memoryGame.Cartas.length ){
-			clearInterval (this.game);
-			memoryGame.Message = "Ueueueu!!";
+			clearInterval (memoryGame.game);
+			memoryGame.Message = messageWin;
+			alert("Enhorabuena has ganado el juego en " +
+			memoryGame.Tried + " intentos, Vuelve a intentarlo");
+			MemoryGame.prototype.initGame();
+
 		}
 		gs.drawMessage(memoryGame.Message);
 	},
 
 	loop : function(){
 		//Dibujo cada 16 ms
-		this.game = window.setInterval(
+		memoryGame.game = window.setInterval(
 			this.draw,
 			 16);
 	},
@@ -67,13 +77,17 @@ MemoryGame.prototype = {
 							memoryGame.Cartas[c].found();			
 							memoryGame.Cartas[cardId].found();
 							memoryGame.Solved = memoryGame.Solved + 2;
+							memoryGame.Message = messageFound;
 						}else{
 							//Fallo
 							memoryGame.Cartas[c].flip();
-							memoryGame.Cartas[cardId].flip();								
+							memoryGame.Cartas[cardId].flip();	
+							memoryGame.Message = messageTry;							
 						}
+					memoryGame.Tried ++;
 					}
-				}	
+				}
+
 			},500);
 		}
 	}
@@ -107,7 +121,7 @@ MemoryGame.Card = function(id) {
 
  	this.draw = function(gs, pos){
  		if(this.State != "Down")gs.draw(this.Sprite, pos);
- 		else gs.draw("back", pos);
+ 		else gs.draw(nameBack, pos);
  	}
 
 };
