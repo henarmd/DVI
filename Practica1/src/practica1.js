@@ -53,14 +53,14 @@ MemoryGame.prototype = {
 
 	onClick : function(cardId){
 		//Siempre que este sin levantar
-		if(memoryGame.Cartas[cardId].State != "Down"){}else{
+		if(memoryGame.Cartas[cardId].State == "Down"){
 			//Volteo
 			memoryGame.Cartas[cardId].flip();
 			//Tiempo que se mantiene 3s
-
+			window.clearTimeout();
 			window.setTimeout(function(){
 				//Busco otras levantadas, que no sea la clickada
-				for(c = 0 ; c+1 < memoryGame.Cartas.length ; c++){
+				for(c = 0 ; c < memoryGame.Cartas.length ; c++){
 					if(memoryGame.Cartas[c].State == "Up" && c != cardId){
 						if( memoryGame.Cartas[c].compareTo(memoryGame.Cartas[cardId])){
 							//Acierto
@@ -74,7 +74,7 @@ MemoryGame.prototype = {
 						}
 					}
 				}	
-			},300);
+			},500);
 		}
 	}
 };
